@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+    <?php require 'head.phtml';?>
+</head>
+<body>
+<h1>Les Produits</h1>
+<nav><a href="index.php?page=panier">Panier</a></nav>
+<main>
+    <?php $total = []; ?>
+    <?php //var_dump($listProduit) ?>
+    <?php foreach($listProduit as $unProduit): ?>
+        <article>
+            <figure><img src="<?= $unProduit['image']; ?>" alt="<?= $unProduit['produit']; ?>"></figure>
+            <div>
+            <h2><?= $unProduit['produit']; ?></h2>
+            <p><?= nl2br($unProduit['description']); ?></p>
+            <p>Provenance : <?= $unProduit['pays']; ?></p>
+            <p>Prix : <?= number_format($unProduit['price']/100,2); ?>€/kg</p>
+            <p>Quantité Displonible : <?= $unProduit['stock']; ?>kg</p>
+
+                <form action="index.php?page=panier" method="post">
+                    <input type="hidden" name="id" value="<?= $unProduit['produit_id']; ?>">
+                    <input type="hidden" name="quantiteeDisponible" value="<?= $unProduit['stock']; ?>" class="quantiteeDisponible<?= $unProduit['produit_id']; ?>">
+                    <label for="<?= $unProduit['produit_id']; ?>">Nombre de kg désiré
+                        <input type="number" name="quantitee" data-id="<?= $unProduit['produit_id']; ?>" placeholder="<?= $unProduit['stock']; ?>" class="quantiteProduit" value="1" min="0">
+                    </label>
+                    <label for="prixIndicatif">
+                        <input type="number" name="prixIndicatif" readonly data-name="<?= $unProduit['produit_id']; ?>" data-prix="<?= number_format($unProduit['price']/100,2); ?>">
+                    </label>
+                    <input type="submit" value="ajouter au panier" name="ajouterAuPanier">
+                </form>
+            </div>
+        </article>
+    <?php array_push($total, $unProduit['produit_id']);
+    endforeach; ?>
+    <div>
+        <p>
+            Total :
+            <strong id="total"></strong>
+            €
+        </p>
+
+        <form action="index.php?page=panier" method="post">
+            <?php foreach($total as $chaqueProduitId):?>
+                <input type="hidden" name="produit_id[]" value="<?= $chaqueProduitId ?>">
+                <input type="hidden" name="quantitee_produit_<?= $chaqueProduitId ?>" class="quantiteePour<?= $chaqueProduitId ?>">
+            <?php endforeach; ?>
+            <input type="submit" name="validerAll" value="ajouter tous au panier" id="validerAll">
+        </form>
+    </div>
+</main>
+    <?php require 'script.phtml';?>
+</body>
+</html>

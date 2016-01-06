@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<?php require 'head.phtml'?>
+<body>
+<h1>Panier</h1>
+<nav><a href="index.php?page=index">Retour accueil</a></nav>
+<?php //var_dump($_POST); ?>
+<main>
+    <?php //var_dump($_SESSION['cadie']); ?>
+    <section>
+        <!-- INFO DE BONNE ENTREE DANS LE CADIE -->
+        <div>
+            <?php if(isset($_POST['ajouterAuPanier'])): ?>
+                <?php if($produitResultat === 'ok'): ?>
+                    <p>Bien ajouté au Panier</p>
+                <?php elseif($produitResultat === 'ko') : ?>
+                    <p>Nous n'avons pas le stock disponible.</p>
+                    <p>Il nous reste seulement <?= $StockDisponible; ?>kg.</p>
+                <?php endif;
+            endif; ?>
+        </div>
+        <!-- AFFICHAGE CADIE -->
+        <?php
+       // var_dump($_SESSION['cadie']);
+        //var_dump($leProduit);
+        foreach($_SESSION['cadie'] as $key => $leProduit) : ?>
+            <table>
+                <td><?= ($key+1); ?></td>
+                <td><figure><img src="<?= $leProduit['image']; ?>" alt="<?= $leProduit['name']; ?>"></figure></td>
+                <td><h2><?= $leProduit['name']; ?></h2></td>
+                <td>
+                    <p><?= nl2br($leProduit['description']); ?></p>
+                    <p>Provenance : <?= $leProduit['pays']; ?></p>
+                    <p>Quantité choisi : <?= $leProduit['quantitee']; ?>kg</p>
+                    <p>Prix : <?= (number_format($leProduit['price']/100,2)*$leProduit['quantitee']); ?>€</p>
+                </td>
+                <td>
+                    <form action="index.php?page=panier" method="post">
+                        <input type="hidden" name="eleSupp" value="<?= $key; ?>">
+                        <input type="submit" name="suppDuPanier" value="supprimer">
+                    </form>
+                </td>
+                <td>
+                </td>
+            </table>
+        <?php endforeach; ?>
+
+        <!-------------- SUPPRIMER -------------------->
+        <form action="index.php?page=panier" method="post">
+            <input type="submit" value="Tout supprimer" name="suppAll">
+        </form>
+        <!------------- Valider commande -------------->
+        <form action="index.php?page=valider" method="post">
+            <input type="submit" name="valider" value="panier">
+        </form>
+    </section>
+</main>
+<script src="jquery-2.1.4.min.js"></script>
+<script scr="panier.js"></script>
+</body>
+</html>

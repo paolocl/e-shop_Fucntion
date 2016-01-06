@@ -1,0 +1,12 @@
+article{
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-start;
+}
+
+article>div{
+    width: 50%;
+}
+article>figure {
+    width: 30%;
+}

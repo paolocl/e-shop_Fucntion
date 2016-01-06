@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+ <?php require 'head.phtml'; ?>
+</head>
+<body>
+<h1>PAYEMENT</h1>
+<?php if(isset($commande_id)): ?>
+<h2>NUMERO DE COMMANDE : <?= $commande_id; ?></h2>
+
+    <form action="index.php?page=valider">
+        <input type="hidden" name="numeroDeCommande" value="<?= $commande_id; ?>">
+        <label for="numeroCB">Numero de CB :
+            <input type="text" name="numeroCB" required>
+        </label>
+        <label for="crypto">Cryptogramme :
+            <input type="text" name="crypto" required>
+        </label>
+        <label for="name">Nom et Prenom de la carte :
+            <input type="text" name="name" required>
+        </label>
+        <input type="submit" name="envoiPayment" value="Payer">
+    </form>
+</body>
+</html>
+
+<?php endif; ?>
