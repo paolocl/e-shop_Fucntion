@@ -54,7 +54,7 @@ class Controller
             //var_dump($_SESSION['cadie']);
 					if(isset($_SESSION['cadie']) && !empty($_SESSION['cadie']))
 					{
-            $commande_id = addCommande('paolo', $_SESSION['cadie']); //////LE CLIENT EST MOI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! A CHANGER
+            $commande_id = addCommande('paolo'/* $_SESSION['nomClient'] */, $_SESSION['cadie']); //////LE CLIENT EST MOI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! A CHANGER
 						echo 'ici';
 						var_dump($commande_id);
 						if(!$commande_id[0])
@@ -67,9 +67,8 @@ class Controller
         }
         elseif(isset($_POST['envoiPayment']))// POUR PAYER PLUS TARD AVEC SON NUMERO DE COMMANDE 
         {
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-//!!!!!!!!!!! A FAIRE :::: REGARDE RDANS LA BDD LE STATUS DE LA COMMANDE !!!!!!//
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+					//********** VERIFICATION DU STATUS BDD LE STATUS DE LA COMMANDE ***********//
+
 					$verif = verifCommandeDBB($_POST['numeroDeCommande'])['status'];
 					if($verif === '0')
 					{
@@ -96,20 +95,32 @@ class Controller
 		{
 			
 			
+			// A TESTER
+			$toujoursEnStock = true;
+			$listDesCommandes = getCommande($_POST['commande_id']);
 			
+			foreach($listDesCommandes as $uneCommande)
+			{
+				$produit_id = $uneCommande['produit_id'];
+				$quantitee = $uneCommande['quantitee'];
+				
+				if(!verifEnStock($produit_id, $quantitee))
+				{
+					var_dump($toujoursEnStock);
+					$toujoursEnStock = false;
+					break;
+				};
+			}
 			
-			
-			//A FAIRE
-			//ICI
-			//REPRENDRE LE POST COMMANDE ID, SORTIR LA LIST DES PRODUTI getCommande($commande_id) FAIRE UN BOUCLE ET UTILISER LA REQUET function verifEnStock($produit_id, $quantitee);
-			//VERIF SI AU MOMENT DU PAYEMENT IL Y A TOUJOURS LE STOCK DISPO
+			//AJOUT DES FUNCTIONS DE VERIF DES COMMANDE AU MOMENT DU PAYMENT MAIS PAS TESTEE
+			// $toujoursEnStock A VERIF
 			
 			
 			
 			
 			
 			// REJEX CB *** var_dump(strlen(preg_replace("/[\-]/", "", $_POST['numeroCB'])));
-			if(isset($_POST['envoiPayment']) && intval($_POST['numeroCB']) != 0 && strlen(preg_replace("/[\s\-]/", "", $_POST['numeroCB'])) === 16 && intval($_POST['commande_id']) != 0  && intval($_POST['crypto']) != 0 && strlen(preg_replace("/[\s\-]/", "", $_POST['crypto'])) === 3)
+			if(isset($_POST['envoiPayment']) && intval($_POST['numeroCB']) != 0 && strlen(preg_replace("/[\s\-]/", "", $_POST['numeroCB'])) === 16 && intval($_POST['commande_id']) != 0  && intval($_POST['crypto']) != 0 && strlen(preg_replace("/[\s\-]/", "", $_POST['crypto'])) === 3 && !$toujoursEnStock)
 			{
 				echo 'hello';
 				$date = InputDateEnDateCB($_POST['date']);
@@ -136,7 +147,8 @@ class Controller
 		}
 		public static function commande()
 		{
-			
+			$AllOrderCostumer = getAllCommandeUser(/*$_SESSION['nomClient']*/'paolo');
+			//On fera une page detaillent la commande $uneCommande avec getCommande($commande_id)
 			require BASE_DIR . '/views.commande.phtml';
 		}
 
