@@ -6,20 +6,34 @@
 <h1>PAYEMENT</h1>
 <?php if(isset($commande_id)): ?>
 <h2>NUMERO DE COMMANDE : <?= $commande_id; ?></h2>
-
-    <form action="index.php?page=valider">
-        <input type="hidden" name="numeroDeCommande" value="<?= $commande_id; ?>">
-        <label for="numeroCB">Numero de CB :
-            <input type="text" name="numeroCB" required>
-        </label>
-        <label for="crypto">Cryptogramme :
-            <input type="text" name="crypto" required>
-        </label>
-        <label for="name">Nom et Prenom de la carte :
-            <input type="text" name="name" required>
-        </label>
-        <input type="submit" name="envoiPayment" value="Payer">
-    </form>
+    <h3>Prix Total de la commande : <?= intval($prixTotalCommande)/100; ?> euros</h3>
+		<?php 
+if($commande_id != 'Déjà payé' && $prixTotalCommande != null):  ?>
+			<form action="index.php?page=payment" method="post">
+				 <input type="hidden" name="commande_id" value="<?= $commande_id; ?>">
+				 <input type="hidden" name="prixTotalCommande" value="<?= $prixTotalCommande; ?>">
+					<input type="hidden" name="numeroDeCommande" value="<?= $commande_id; ?>">
+					<label for="numeroCB">Numero de CB :
+							<input type="text" name="numeroCB" required>
+					</label>
+					<label for="crypto">Cryptogramme :
+							<input type="text" name="crypto" required>
+					</label>
+					<label for="date">date :
+							<input type="date" name="date" required>
+					</label> 
+					<!--<label for="month">Mois :
+							<input type="number" name="month" min="1" max="12" required>
+					</label> 
+					<label for="annee">Année :
+							<input type="number" name="annee" min="2016" max="2026" required>
+					</label> -->
+					<label for="name">Nom et Prenom de la carte :
+							<input type="text" name="name" required>
+					</label>
+					<input type="submit" name="envoiPayment" value="Payer">
+			</form>
+<?php endif; ?>
 </body>
 </html>
 

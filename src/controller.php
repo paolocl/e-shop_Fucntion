@@ -2,7 +2,6 @@
 
 class Controller
 {
-
     public static function index()
     {
         $listProduit = null;
@@ -39,10 +38,10 @@ class Controller
 
 
 
-        if(isset($_POST['suppDuPanier'])):
+        if(isset($_POST['suppDuPanier'])): //********** SUP UN ELEMENT
             array_splice($_SESSION['cadie'], intval($_POST['eleSupp']), 1);
         endif;
-        if(isset($_POST['suppAll'])):
+        if(isset($_POST['suppAll'])): //*** SUP TOUS ELEMENTS
             $_SESSION['cadie'] =[];
         endif;
         //********* AJOUTER AU CADIE ***************/
@@ -50,18 +49,95 @@ class Controller
     }
     public static function valider()
     {
-        if(isset($_POST['valider']) && !empty($_POST['valider']))
+        if(isset($_POST['valider']) && !empty($_POST['valider'])) //**** ADD A LA BDD
         {
             //var_dump($_SESSION['cadie']);
-            $commande_id = addCommande('paolo', $_SESSION['cadie']);
+					if(isset($_SESSION['cadie']) && !empty($_SESSION['cadie']))
+					{
+            $commande_id = addCommande('paolo', $_SESSION['cadie']); //////LE CLIENT EST MOI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! A CHANGER
+						echo 'ici';
+						var_dump($commande_id);
+						if(!$commande_id[0])
+						{
+							header('Location: index.php?page=panier&produit='.$commande_id[1]);
+						};
+						$_SESSION['cadie'] =[];
+						
+					}
         }
-        elseif(isset($_POST['envoiPayment']))
+        elseif(isset($_POST['envoiPayment']))// POUR PAYER PLUS TARD AVEC SON NUMERO DE COMMANDE 
         {
-            $commande_id = $_POST['numeroDeCommande'];
-            //Requet pour recup le prix;
-            //SELECT sum(quantitee*(price/100)) FROM produits_commander natural join produits where commande_id=15
-        }
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+//!!!!!!!!!!! A FAIRE :::: REGARDE RDANS LA BDD LE STATUS DE LA COMMANDE !!!!!!//
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+					$verif = verifCommandeDBB($_POST['numeroDeCommande'])['status'];
+					if($verif === '0')
+					{
+            $commande_id = $_POST['numeroDeCommande'];  
+					}
+					elseif($verif === '2')
+					{
+						$commande_id = 'Probleme dans le payment, contacter votre banque';
+					}
+					elseif($verif === '4')
+					{
+						$commande_id = 'Déjà payé';
+					};
+        };
+				if(isset($commande_id)) //**** RECUP PRIX TOTAL DEPUIS BDD
+				{
+					//var_dump(getCommandePrice($commande_id));
+					$prixTotalCommande = getCommandePrice($commande_id)['prix_total_commande'];
+					var_dump($prixTotalCommande);
+				}
         require BASE_DIR . '/views/valider.phtml';
     }
+		public static function payment()
+		{
+			
+			
+			
+			
+			
+			//A FAIRE
+			//ICI
+			//REPRENDRE LE POST COMMANDE ID, SORTIR LA LIST DES PRODUTI getCommande($commande_id) FAIRE UN BOUCLE ET UTILISER LA REQUET function verifEnStock($produit_id, $quantitee);
+			//VERIF SI AU MOMENT DU PAYEMENT IL Y A TOUJOURS LE STOCK DISPO
+			
+			
+			
+			
+			
+			// REJEX CB *** var_dump(strlen(preg_replace("/[\-]/", "", $_POST['numeroCB'])));
+			if(isset($_POST['envoiPayment']) && intval($_POST['numeroCB']) != 0 && strlen(preg_replace("/[\s\-]/", "", $_POST['numeroCB'])) === 16 && intval($_POST['commande_id']) != 0  && intval($_POST['crypto']) != 0 && strlen(preg_replace("/[\s\-]/", "", $_POST['crypto'])) === 3)
+			{
+				echo 'hello';
+				$date = InputDateEnDateCB($_POST['date']);
+				$prixTotalCommande = getCommandePrice($_POST['commande_id'])['prix_total_commande'];
+				$retour = validationPayment($_POST['numeroCB'],$_POST['crypto'],$date,$prixTotalCommande,$_POST['commande_id']/*,$name)*/);
+				$retour = explode('-',$retour);
+				if($retour[0] === 'ok')
+				{
+					$status = 4; //PAYEMENT OK
+				}
+				else
+				{
+				 	$status = 2;	//PROBLEME DE PAYEMENT
+				}
+				changementStatus($status,$retour[1]);
+			}
+			else
+			{
+				header ('Location:index.php?page=valider&status=2');	
+			}
+			//var_dump($retour);
+			require BASE_DIR . '/views/payment.phtml';
+			//header('Location:'.BASE_DIR.'/views/commande.phtml?status='.$status);
+		}
+		public static function commande()
+		{
+			
+			require BASE_DIR . '/views.commande.phtml';
+		}
 
 }

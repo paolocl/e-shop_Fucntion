@@ -3,8 +3,10 @@ session_start();
 //controle des page accessible
 $pages = [
     'index',
-	'panier',
+		'panier',
     'valider',
+		'payment',
+		'commande',
 ];
 
 if (isset($_GET['page']) && in_array($_GET['page'], $pages)) {

@@ -32,7 +32,11 @@ function affichagePrix(){
     {
         $(this).parent().nextAll('input[type="submit"]').attr('disabled', 'disabled');
         $('#validerAll').attr('disabled', 'disabled');
-    };
+    }else if(parseFloat($(this).val()) <= parseFloat($('.quantiteeDisponible'+name).val()))
+		{
+			$(this).parent().nextAll('input[type="submit"]').removeAttr('disabled', 'disabled');
+			$('#validerAll').removeAttr('disabled', 'disabled');
+		};
 };
 
 

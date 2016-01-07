@@ -4,9 +4,18 @@
 <body>
 <h1>Panier</h1>
 <nav><a href="index.php?page=index">Retour accueil</a></nav>
-<?php //var_dump($_POST); ?>
+<?php //var_dump($_SESSION); ?>
 <main>
     <?php //var_dump($_SESSION['cadie']); ?>
+    <aside>
+    	<?php if(isset($_GET['produit'])){
+    		$problemeStock = $_GET['produit'];
+	if(isset($problemeStock))
+													{ ?>
+															<p>Désolé mais quelqu'un à commander avant vous, le produit n'a plus asser de stock</p>
+												<?php	};
+    	};?>
+    </aside>
     <section>
         <!-- INFO DE BONNE ENTREE DANS LE CADIE -->
         <div>
@@ -21,38 +30,46 @@
         </div>
         <!-- AFFICHAGE CADIE -->
         <?php
-       // var_dump($_SESSION['cadie']);
-        //var_dump($leProduit);
-        foreach($_SESSION['cadie'] as $key => $leProduit) : ?>
-            <table>
-                <td><?= ($key+1); ?></td>
-                <td><figure><img src="<?= $leProduit['image']; ?>" alt="<?= $leProduit['name']; ?>"></figure></td>
-                <td><h2><?= $leProduit['name']; ?></h2></td>
-                <td>
-                    <p><?= nl2br($leProduit['description']); ?></p>
-                    <p>Provenance : <?= $leProduit['pays']; ?></p>
-                    <p>Quantité choisi : <?= $leProduit['quantitee']; ?>kg</p>
-                    <p>Prix : <?= (number_format($leProduit['price']/100,2)*$leProduit['quantitee']); ?>€</p>
-                </td>
-                <td>
-                    <form action="index.php?page=panier" method="post">
-                        <input type="hidden" name="eleSupp" value="<?= $key; ?>">
-                        <input type="submit" name="suppDuPanier" value="supprimer">
-                    </form>
-                </td>
-                <td>
-                </td>
-            </table>
-        <?php endforeach; ?>
+				$totalprix = 0;
+				if(isset($_SESSION['cadie'])): //**************SI PANIER EXISTE ET NON VIDE
+					// var_dump($_SESSION['cadie']);
+					//var_dump($leProduit);
+					foreach($_SESSION['cadie'] as $key => $leProduit) : ?>
+							<table>
+									<td><?= ($key+1); ?></td>
+									<td><figure><img src="<?= $leProduit['image']; ?>" alt="<?= $leProduit['name']; ?>"></figure></td>
+									<td><h2><?= $leProduit['name']; ?></h2></td>
+									<td>
+											<p><?= nl2br($leProduit['description']); ?></p>
+											<p>Provenance : <?= $leProduit['pays']; ?></p>
+											<p>Quantité choisi : <?= $leProduit['quantitee']; ?>kg</p>
+											<p>Prix : <?php  $prix = (number_format($leProduit['price']/100,2)*$leProduit['quantitee']); echo $prix;?>€</p>
+									</td>
+									<td>
+											<form action="index.php?page=panier" method="post">
+													<input type="hidden" name="eleSupp" value="<?= $key; ?>">
+													<input type="submit" name="suppDuPanier" value="supprimer">
+											</form>
+									</td>
+									<td>
+									</td>
+							</table>
+					<?php 
+					$totalprix += $prix;
+					endforeach; ?>
 
-        <!-------------- SUPPRIMER -------------------->
-        <form action="index.php?page=panier" method="post">
-            <input type="submit" value="Tout supprimer" name="suppAll">
-        </form>
-        <!------------- Valider commande -------------->
-        <form action="index.php?page=valider" method="post">
-            <input type="submit" name="valider" value="panier">
-        </form>
+					<!-------------- SUPPRIMER -------------------->
+					<form action="index.php?page=panier" method="post">
+							<input type="submit" value="Tout supprimer" name="suppAll">
+					</form>
+					<p id="totalCadie">Total de votre cadie : <?= $totalprix; ?>€</p>
+					<!------------- Valider commande -------------->
+					<form action="index.php?page=valider" method="post">
+							<input type="submit" name="valider" value="Valider Panier">
+					</form>
+					<?php else: //*************SI PANIER VIDE ?>
+					<p>Panier vide</p>
+				<?php endif; ?>
     </section>
 </main>
 <script src="jquery-2.1.4.min.js"></script>

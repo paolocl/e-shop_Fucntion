@@ -5,7 +5,15 @@
 <body>
 <h1>Les Produits</h1>
 <nav><a href="index.php?page=panier">Panier</a></nav>
+<aside>
+<h2>PAYER UNE COMMANDE DEJA PASSéE</h2>
+	<form action="index.php?page=valider" method="post">
+		<input type="number" name="numeroDeCommande" required>
+		<input type="submit" name="envoiPayment" value="Payer">
+	</form>
+</aside>
 <main>
+	<h2>NOS PRODUITS</h2>
     <?php $total = []; ?>
     <?php //var_dump($listProduit) ?>
     <?php foreach($listProduit as $unProduit): ?>
