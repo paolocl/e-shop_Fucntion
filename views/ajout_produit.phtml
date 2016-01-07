@@ -7,32 +7,38 @@
 </head>
 
 <body>
-	<?php if(!isset($_POST['ajoutProduit'])): ?>
-		<form action="index.php?page=ajout_produit.phtml" method="post" enctype="multipart/form-data">
+	<aside>
+		<?php if(isset($_POST['ajoutProduit'])): ?>
+			<?php endif; ?>
+	</aside>
+	<section>
+		<?php if(!isset($_POST['ajoutProduit'])): ?>
+			<form action="index.php?page=ajout_produit.phtml" method="post" enctype="multipart/form-data">
 
-			<label>NOM DU PRODUIT :
-				<input type="text" name="nomProduit">
-			</label>
-			<label>PAYS DE PROVENANCE
-				<input type="text" name="pays">
-			</label>
-			<label>DESCIRIPTION :
-				<textarea name="description" id="" cols="30" rows="10"></textarea>
-			</label>
-			<label>PRIX EN EUROS
-				<input type="numbre" name="prix">
-				<!-- PRIX A METRE ENSUITE EN CENTIME -->
-			</label>
-			<label>STOCK EN KG ARONDIt
-				<input type="numbre" name="stock">
-				<!-- en KG -->
-			</label>
-			<label>UNE PHOTO DU PRODUIT
-				<input type="file" name="photo">
-			</label>
-			<input type="submit" name="ajoutProduit">
-		</form>
-		<?php endif; ?>
+				<label>NOM DU PRODUIT :
+					<input type="text" name="nomProduit">
+				</label>
+				<label>PAYS DE PROVENANCE
+					<input type="text" name="pays">
+				</label>
+				<label>DESCIRIPTION :
+					<textarea name="description" id="" cols="30" rows="10"></textarea>
+				</label>
+				<label>PRIX EN EUROS
+					<input type="numbre" name="prix">
+					<!-- PRIX A METRE ENSUITE EN CENTIME -->
+				</label>
+				<label>STOCK EN KG ARONDIt
+					<input type="numbre" name="stock">
+					<!-- en KG -->
+				</label>
+				<label>UNE PHOTO DU PRODUIT
+					<input type="file" name="photo">
+				</label>
+				<input type="submit" name="ajoutProduit">
+			</form>
+			<?php endif; ?>
+	</section>
 </body>
 
 </html>
