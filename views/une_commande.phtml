@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<?php require 'head.phtml'; ?>
+	<title>Ma commande</title>
+</head>
+<body>
+<?php //var_dump($uneCommande); ?>
+	<section>
+	<?php foreach($uneCommande as $unProduit): ?>
+		<table>
+			<figure>
+				<img src="<?= $unProduit['image'] ;?>">
+			</figure>
+			<div>
+				<h2><?= $unProduit['nom'] ;?></h2>
+				<p>Description produit : <?= $unProduit['description'] ;?></p>
+				<p>Pays : <?= $unProduit['pays'] ;?></p>
+				<p>Quantitée : <?= $unProduit['quantitee'] ;?>kg</p>
+				<p>Prix commande : <?= intval($unProduit['prix_commande'])/100 ;?> euros</p>
+				<p>Status commande : 
+							<?php if($unProduit['status'] === '0'):
+								echo 'Payement non effectué';
+							elseif($unProduit['status'] === '2'):
+								echo 	'probleme dans le payment';
+							elseif($unProduit['status'] === '4'):
+								echo 'Payement effectuer, preparationd e la commande';
+							endif; ?></p>
+			</div>
+		</table>
+	<?php endforeach; ?>
+	</section>
+</body>
+</html>

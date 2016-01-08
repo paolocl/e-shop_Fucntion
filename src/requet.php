@@ -28,12 +28,11 @@ function addCommande($client, $session)
         //var_dump($unProduit);
         $produit_id = $unProduit['produit_id'];
         $quantitee = $unProduit['quantitee'];
-				var_dump(verifEnStock($produit_id, $quantitee));
-				if(!verifEnStock($produit_id, $quantitee)) //SI PAS TRUE FIN DE BOULCE (BREAK pas necessaire) ET FIN DE FUNCTION RETURN
-				{
+				//var_dump(verifEnStock($produit_id, $quantitee));
+				if(!verifEnStock($produit_id, $quantitee)): //SI PAS TRUE FIN DE BOULCE (BREAK pas necessaire) ET FIN DE FUNCTION RETURN
 					return [false,$produit_id];
 					//break;
-				};
+				endif;
 		endforeach;
 		//SI LA BOUCLE DE VERIF NA PAS RETURN ALORS ON PASSE DANS CETTE BOUCLE
 		foreach($session as $unProduit):
@@ -51,7 +50,7 @@ function addCommande($client, $session)
 
 					$i = $query->execute();
 					//var_dump($i);
-				}
+				
 	
     endforeach;
     return $commande_id;
@@ -67,12 +66,12 @@ function getClientId($client){
 
     $query->execute();
 
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    return $query->fetch(PDO::FETCH_ASSOC);
 }
 
 function creationCommande($client){
 
-        $client_id = getClientId($client)[0];
+        $client_id = getClientId($client);
         require 'connect.php';
         $query = $pdo->prepare("
             INSERT INTO commandes
@@ -167,7 +166,7 @@ function getCommande($commande_id)
 	require 'connect.php';
 	
 	$query = $pdo->prepare("
-	SELECT image, produits.name, description, pays.name, sum(quantitee*price) as prix_commande, status, quantitee, produit_id  FROM `produits` INNER JOIN pays ON produits.pays_id = pays.pays_id NATURAL JOIN commandes NATURAL JOIN produits_commander WHERE commande_id = :commande_id
+	SELECT image, produits.name AS nom, description, pays.name AS pays, quantitee*price as prix_commande, status, quantitee, produit_id  FROM `produits` INNER JOIN pays ON produits.pays_id = pays.pays_id NATURAL JOIN commandes NATURAL JOIN produits_commander WHERE commande_id = :commande_id
 	");
 	$query->bindValue(':commande_id', $commande_id, PDO::PARAM_INT);
 	
@@ -179,16 +178,13 @@ function getCommande($commande_id)
 function getAllCommandeUser($client)
 {
 	$client_id = getClientId($client);
+	//var_dump($client_id);
 	require 'connect.php';
 	$query = $pdo->prepare("
-	SELECT client_id, commande_id, status FROM commandes NATURAL JOIN clients WHERE client_id = :client_id
-	");
+	SELECT client_id, commande_id, status, COUNT(produit_id) AS nombre_element, SUM(quantitee*price) AS prix_commande FROM commandes NATURAL JOIN produits NATURAL JOIN produits_commander WHERE client_id = :client_id GROUP BY commande_id
+	");	
 	
-	//AJOUTER QUANTITER DE PRODUIT ET PRIX DE LA COMMANDE
-	//SELECT client_id, commande_id, status, SUM(produit_id) AS nombre_produit, SUM(quantitee*price) AS prix_commande FROM commandes NATURAL JOIN clients NATURAL JOIN produits NATURAL JOIN produits_commander WHERE client_id = :client_id
-	
-	
-	$query->bindValue(':client_id', $client_id, PDO::PARAM_INT);
+	$query->bindValue(':client_id', $client_id['client_id'], PDO::PARAM_INT);
 	
 	$query->execute();
 	

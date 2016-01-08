@@ -6,7 +6,38 @@
 
 	<body>
 		<h1>Mes Commandes </h1>
-		<?php var_dump($AllOrderCostumer); ?>
+		<section>
+			<?php //var_dump($AllOrderCostumer); ?>
+			<?php foreach($AllOrderCostumer as $uneCommande): ?>
+				<table class="mesCommandes">
+					<thead>
+							<td>Numero de commande</td>
+							<td>Nombre d'element dans la commande</td>
+							<td>status</td>
+							<td>prix commande</td>
+					</thead>
+					<tr>
+					<td><?= $uneCommande['commande_id']; ?></td>
+					<td><?= $uneCommande['nombre_element']; ?></td>
+					<td><?php if($uneCommande['status'] === '0'):
+								echo 'Payement non effectué';
+							elseif($uneCommande['status'] === '2'):
+								echo 	'probleme dans le payment';
+							elseif($uneCommande['status'] === '4'):
+								echo 'Payement effectuer, preparationd e la commande';
+							endif; ?>
+					</td>
+					<td><?= intval($uneCommande['prix_commande'])/100; ?>euros</td>
+					<td>
+						<form method="post" action="index.php?page=une_commande">
+							<input type="hidden" name="commande_id" value="<?= $uneCommande['commande_id']; ?>">
+							<input type="submit" name="afficheUncommande" value="voir ma commande">
+						</form>
+					</td>
+					</tr>
+				</table>
+			<?php endforeach; ?>
+		</section>
 	</body>
 
 </html>

@@ -149,7 +149,15 @@ class Controller
 		{
 			$AllOrderCostumer = getAllCommandeUser(/*$_SESSION['nomClient']*/'paolo');
 			//On fera une page detaillent la commande $uneCommande avec getCommande($commande_id)
-			require BASE_DIR . '/views.commande.phtml';
+			require BASE_DIR . '/views/commande.phtml';
+		}
+		public static function une_commande()
+		{
+			if(isset($_POST['afficheUncommande']))
+			{
+				$uneCommande = getCommande($_POST['commande_id']);
+			}
+			require BASE_DIR . '/views/une_commande.phtml';
 		}
 
 }

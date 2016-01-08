@@ -7,6 +7,7 @@ $pages = [
     'valider',
 		'payment',
 		'commande',
+		'une_commande',
 ];
 
 if (isset($_GET['page']) && in_array($_GET['page'], $pages)) {
