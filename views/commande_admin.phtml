@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Admin commande</title>
+</head>
+<body>
+<form action="admin.php?page=deconnexion" method="post">
+		<input type="submit" name="deconnexion" value="deconnexion">
+		<a href="admin.php?page=produit_admin">liste produit</a>
+</form>
+<table>
+<thead>
+<tr>
+<td>Numero de client</td>
+<td>Numero de commande</td>
+<td>Status</td>
+<td>Nombre d'élèment</td>
+<td>Prix de la Commande</td>
+</tr>
+</thead>
+	<?php foreach($listCommande as $uneCommande):?>
+		<tr>
+			<td><?= $uneCommande['client_id']; ?></td>
+			<td><a href="admin.php?page=descriptif&commande=<?= $uneCommande['commande_id']; ?>"><?= $uneCommande['commande_id']; ?></a></td>
+			<td><?php switch($uneCommande['status']):
+							case '0' :
+								echo 'Payement non effectué';
+							break;
+							case '2' :
+								echo 	'probleme dans le payment';
+							break;
+							case '4' :
+								echo 'Payement effectuer, preparationd e la commande';
+							break;
+							endswitch; ?></td>
+			<td><?= $uneCommande['nombre_element']; ?></td>
+			<td><?= intval($uneCommande['prix_commande'])/100; ?></td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+</body>
+</html>

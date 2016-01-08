@@ -11,8 +11,11 @@ $(document).ready( function(event){
         $('.quantiteProduit').each(affichagePrix);
         $('.quantiteProduit').keyup(affichagePrix);
         $('.quantiteProduit').click(affichagePrix);
-
-
+				//bloque click droit
+				$('img').contextmenu(function(event){
+					event.preventDefault();
+						alert 'pas touche';
+				});
 
 });
 

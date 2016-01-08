@@ -214,5 +214,69 @@ function verifEnStock($produit_id, $quantitee)
 		{
 			return false;
 		};
-		
 }
+
+
+//***** LISTE PAYS **************/
+
+function getPays()
+{
+	require 'connect.php';
+    $query = $pdo->prepare('
+        SELECT name FROM pays
+    ');
+
+    $executer = $query->execute();
+
+    return $listProduit = $query->fetchAll(PDO::FETCH_ASSOC);
+}
+//***** LISTE PAYS **************/
+
+function getPaysByName($pays)
+{
+	require 'connect.php';
+    $query = $pdo->prepare('
+        SELECT pays_id FROM pays where name = :pays
+    ');
+	
+		$query->bindValue(':pays',$pays,PDO::PARAM_STR);
+
+    $executer = $query->execute();
+
+    return $listProduit = $query->fetch(PDO::FETCH_ASSOC);
+}
+
+//******* SUP ARTICLE *************/
+
+function deletProduit($produit_id)
+{
+	require 'connect.php';
+    $query = $pdo->prepare('
+        DELETE FROM produits
+				WHERE produit_id = :produit_id
+    ');
+	
+		$query->bindValue(':produit_id',$produit_id,PDO::PARAM_INT);
+
+    $executer = $query->execute();
+}
+//******* MODIF ARTICLE *************/
+
+function modifProduit($datas, $produit_id)
+{
+	require 'connect.php';
+    $query = $pdo->prepare('
+        UPDATE produits
+				SET ' . $datas . '
+				WHERE produit_id = :produit_id
+    ');
+	
+		//$query->bindValue(':datas',$datas,PDO::PARAM_STR);
+		$query->bindValue(':produit_id',$produit_id,PDO::PARAM_INT);
+
+    $executer = $query->execute();
+}
+
+
+
+

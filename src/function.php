@@ -86,6 +86,32 @@ function mettreGET($array)
 }
 
 
+//*********** CREATION TABLE POUR MODIF **************/
+
+function getUpdateSQL(array $datas)
+{
+	$Resultat = [];
+	foreach($datas as $key => $oneData)
+	{
+		if($key != 'supprimer' && $key != 'modifier' && $key != 'produit_id' && $key != 'pays')
+		{
+			if(is_numeric($oneData))
+			{
+				array_push($Resultat, $key .' = '.$oneData);
+			}
+			else
+			{
+				array_push($Resultat, $key .' = "'.$oneData.'"');
+			}
+			echo 'success';
+		}
+	}
+	var_dump($Resultat);
+	
+	return implode(', ',$Resultat);
+}
+
+
 
 
 

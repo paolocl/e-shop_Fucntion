@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_DIR', realpath(dirname(dirname(__file__))));
+	define('BASE_DIR', realpath(dirname(dirname(__file__))));	
 
 require BASE_DIR . '/src/function.php';
 require BASE_DIR . '/src/card.php';

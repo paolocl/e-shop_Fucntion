@@ -10,7 +10,7 @@ class Controller
     }
     public static function panier()
     {
-
+				//var_dump($_POST);
         //$_SESSION['cadie'] =[];
         $produitResultat = '';
         $trop = 'positif';

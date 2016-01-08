@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Nos produits</title>
+</head>
+<body>
+	<h2>NOS PRODUITS</h2>
+    <?php $i=1;
+		//var_dump($listProduit);
+		//var_dump($listPays) ?>
+    <?php foreach($listProduit as $unProduit): ?>
+        <form method="post" action="admin.php?page=modif_admin" enctype="multipart/form-data">
+            <figure><img src="<?= $unProduit['image']; ?>" alt="<?= $unProduit['produit']; ?>"></figure>
+            
+            <label for="image">Modif Image
+            	<input type="file" name="image" value="<?= $unProduit['image']; ?>">
+            </label>
+            <div>
+            <label for="name">Nom Produit : 
+            	<input type="text" name="name" value="<?= $unProduit['produit']; ?>">
+            </label>
+            <label for="description">description :
+            	<textarea name="description"><?= nl2br($unProduit['description']); ?></textarea>
+            </label>
+            <label>Provenance : 
+							<select name='pays'>
+								<?php foreach($listPays as $pays):
+									if($pays['name'] === $unProduit['pays']):?>
+										<option value="<?= $pays['name']; ?>" selected><?= $pays['name']; ?></option>
+									<?php else:?>
+									
+									<?php endif;?>
+								<?php endforeach; ?>
+							</select>
+            <label>Prix : 
+							<input type="number" name="price" value="<?= number_format($unProduit['price']/100,2); ?>" min="0" step="0.01">
+           €/kg</label>
+            <label>Quantité Displonible : 
+            	<input type="number" name="stock" min="0" value="<?= $unProduit['stock']; ?>">kg
+						</label>
+           <input type="hidden" value="<?= $unProduit['produit_id']; ?>" name="produit_id">
+            <input type="submit" value="modifier" name="modifier" class="submit">
+            <input type="submit" value="supprimer" name="supprimer" class="submit">
+            
+            
+            </div>
+        </form>
+    <?php endforeach; ?>
+    <div>
+    
+    
+    <!-- AJOUTER LA LISTE PAYS ET AJOUT MODIF SUP-->
+    <script src="../www/js/jquery-2.1.4.min.js"></script>
+    <script src="../www/js/ajax.admin.js"></script>
+</body>
+</html>
